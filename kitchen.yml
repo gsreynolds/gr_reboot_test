@@ -13,9 +13,14 @@ driver:
 
 provisioner:
   name: chef_zero
-  max_retries: 3 # tweak in conjunction with wait_for_retry
-  wait_for_retry: 90 # tweak based on machine shutdown speed
-  retry_on_exit_code: [35, 213, 1] # retry for array of exit codes
+  max_retries: 10 # tweak in conjunction with wait_for_retry
+  wait_for_retry: 180 # tweak based on machine shutdown speed
+  # retry for array of exit codes
+  retry_on_exit_code:
+    - 20
+    - 35
+    - 213
+    - 1 
   # client_rb:
   #   exit_status: :enabled # default in 13+, only required for 12.x
   #   client_fork: false # don't fork so we get true exit code, not needed for Windows
@@ -44,9 +49,18 @@ platforms:
     driver:
       image_urn: Canonical:UbuntuServer:18.04-LTS:latest
   - name: windows-2016
+    transport:
+      name: winrm
+      elevated: true
     driver:
       image_urn: MicrosoftWindowsServer:WindowsServer:2016-Datacenter:latest
-
+  - name: windows-2019
+    transport:
+      name: winrm
+      elevated: true
+    driver:
+      image_urn: MicrosoftWindowsServer:WindowsServer:2019-Datacenter:latest
+  
 suites:
   - name: default
     policyfile: Policyfile.rb
